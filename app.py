@@ -24,6 +24,24 @@ _ESTILO: dict[Dictamen, tuple[str, str, str]] = {
     Dictamen.FUERA_DE_ALCANCE: ("#9aa0a6", "➖", "Fuera de alcance"),
 }
 
+# Los 5 agentes (nombre, descripción) para el panel lateral.
+_AGENTES = [
+    ("Segmentador", "divide el contrato en cláusulas"),
+    ("Retriever (RAG)", "busca la norma aplicable"),
+    ("Auditor", "dictamina cada cláusula"),
+    ("Verificador", "valida las citas"),
+    ("Redactor", "consolida el reporte"),
+]
+
+# Los 5 temas auditables, para los chips del panel lateral.
+_TEMAS = [
+    "Salario mínimo",
+    "Jornada laboral",
+    "Período de prueba",
+    "Prestaciones sociales",
+    "Irrenunciabilidad",
+]
+
 _CSS = """
 <style>
   #MainMenu, footer, header {visibility: hidden;}
@@ -48,6 +66,25 @@ _CSS = """
   .lex-score {text-align: center; padding: 16px; border-radius: 14px; background: #eef2f6;}
   .lex-score .num {font-size: 3.1rem; font-weight: 800; line-height: 1;}
   .lex-score .lbl {font-size: .78rem; color: #5a6577; letter-spacing: 1px;}
+  /* panel lateral */
+  .lex-side-title {
+      font-size: .8rem; font-weight: 700; color: #2f6db0;
+      letter-spacing: 1px; text-transform: uppercase; margin: 4px 0 10px;
+  }
+  .lex-agente {display: flex; align-items: flex-start; gap: 10px; margin-bottom: 11px;}
+  .lex-num {
+      flex-shrink: 0; width: 25px; height: 25px; background: #2f6db0; color: #fff;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-weight: 700; font-size: .8rem;
+  }
+  .lex-agente-txt {font-size: .9rem; line-height: 1.35;}
+  .lex-agente-txt b {color: #1e3a5f;}
+  .lex-agente-txt span {color: #5a6577; font-size: .83rem;}
+  .lex-chip {
+      display: inline-block; background: #e3ebf3; color: #1e3a5f;
+      padding: 4px 11px; border-radius: 13px; font-size: .77rem;
+      font-weight: 600; margin: 0 4px 6px 0;
+  }
 </style>
 """
 
@@ -70,6 +107,33 @@ def _color_score(score: int) -> str:
     if score >= 50:
         return "#d4a72c"
     return "#d64545"
+
+
+def _panel_lateral() -> None:
+    """Dibuja el panel lateral: flujo de agentes y alcance."""
+    with st.sidebar:
+        st.markdown(
+            '<div class="lex-side-title">⚙️ Cómo funciona</div>',
+            unsafe_allow_html=True,
+        )
+        st.caption(
+            "Un sistema multiagente orquestado con LangGraph que audita el "
+            "contrato cláusula por cláusula:"
+        )
+        agentes = "".join(
+            f'<div class="lex-agente"><div class="lex-num">{i}</div>'
+            f'<div class="lex-agente-txt"><b>{nombre}</b><br>'
+            f"<span>{desc}</span></div></div>"
+            for i, (nombre, desc) in enumerate(_AGENTES, start=1)
+        )
+        st.markdown(agentes, unsafe_allow_html=True)
+
+        st.markdown(
+            '<div class="lex-side-title" style="margin-top:18px">📋 Alcance</div>',
+            unsafe_allow_html=True,
+        )
+        chips = "".join(f'<span class="lex-chip">{t}</span>' for t in _TEMAS)
+        st.markdown(chips, unsafe_allow_html=True)
 
 
 def _tarjeta_hallazgo(h: Hallazgo) -> str:
@@ -138,24 +202,7 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
-    with st.sidebar:
-        st.markdown("### ¿Cómo funciona?")
-        st.markdown(
-            "Un sistema **multiagente** orquestado con LangGraph audita el "
-            "contrato cláusula por cláusula:"
-        )
-        st.markdown(
-            "- **Segmentador** — divide el contrato\n"
-            "- **Retriever (RAG)** — busca la norma aplicable\n"
-            "- **Auditor** — dictamina la cláusula\n"
-            "- **Verificador** — valida las citas\n"
-            "- **Redactor** — consolida el reporte"
-        )
-        st.markdown("### Alcance")
-        st.caption(
-            "Salario mínimo · Jornada laboral · Período de prueba · "
-            "Prestaciones sociales · Irrenunciabilidad de derechos"
-        )
+    _panel_lateral()
 
     st.info(f"ℹ️ {DISCLAIMER}")
 
