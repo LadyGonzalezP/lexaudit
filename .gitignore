@@ -1,0 +1,25 @@
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Vector store persistido (se regenera con el ingest)
+data/chroma/*
+!data/chroma/.gitkeep
+
+# Sistema operativo / editores
+.DS_Store
+.vscode/
+.idea/
