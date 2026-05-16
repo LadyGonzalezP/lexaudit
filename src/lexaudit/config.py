@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     # --- LLM (Google Gemini) ---
     gemini_api_key: str
-    gemini_model: str = "gemini-2.0-flash"
+    gemini_model: str = "gemini-2.5-flash"
     embedding_model: str = "models/gemini-embedding-001"
 
     # --- Rutas ---
@@ -36,9 +36,8 @@ class Settings(BaseSettings):
     retrieval_top_k: int = 3
 
     # --- Parámetros legales (cambian por año / decreto — actualizar aquí) ---
-    # SMMLV: Salario Mínimo Mensual Legal Vigente.
-    # TODO: confirmar el valor 2026 contra el decreto oficial antes de la entrega.
-    smmlv: int = 1_423_500
+    # SMMLV 2026: Salario Mínimo Mensual Legal Vigente (verificado, decreto 2026).
+    smmlv: int = 1_750_905
     jornada_max_semanal: int = 44  # horas — 44h hasta 14-jul-2026, 42h después
 
     # --- Verificador ---
