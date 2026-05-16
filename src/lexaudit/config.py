@@ -1,12 +1,13 @@
 """Configuración central de LexAudit.
 
 Toda la configuración del sistema vive acá, en un solo lugar. Los valores
-sensibles (la API key) se leen del archivo .env; el resto tiene valores por
+sensibles (las API keys) se leen del archivo .env; el resto tiene valores por
 defecto razonables. Los parámetros legales que cambian cada año (SMMLV,
 jornada) se centralizan aquí para poder actualizarlos sin tocar el código.
 """
 
 from pathlib import Path
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -23,8 +24,9 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # --- Proveedor de LLM (agnóstico: "groq" o "gemini") ---
-    llm_provider: str = "groq"
+    # --- Proveedor de LLM (agnóstico) ---
+    # Validado por tipo: solo "groq" o "gemini". Otro valor falla al arrancar.
+    llm_provider: Literal["groq", "gemini"] = "groq"
 
     # Groq — free tier amplio, usado para los agentes (chat)
     groq_api_key: str = ""
