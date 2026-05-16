@@ -23,8 +23,15 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # --- LLM (Google Gemini) ---
-    gemini_api_key: str
+    # --- Proveedor de LLM (agnóstico: "groq" o "gemini") ---
+    llm_provider: str = "groq"
+
+    # Groq — free tier amplio, usado para los agentes (chat)
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.3-70b-versatile"
+
+    # Google Gemini — usado para los embeddings del RAG (y opcional como chat)
+    gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
     embedding_model: str = "models/gemini-embedding-001"
 
