@@ -24,14 +24,53 @@ contra 5 riesgos laborales frecuentes y verificables:
 
 El sistema **no responde preguntas** — produce un entregable: un reporte.
 
-## Arquitectura (resumen)
+## Arquitectura
 
-Cinco agentes con roles diferenciados:
+### Componentes
+
+```mermaid
+flowchart TD
+    U(["Usuario"]) --> APP["App Streamlit"]
+    APP --> G["Grafo LangGraph (orquestador)"]
+    G --> SEG["Segmentador"]
+    G --> RET["Retriever RAG"]
+    G --> AUD["Auditor"]
+    G --> VER["Verificador"]
+    G --> RED["Redactor"]
+    RET --> VS[("ChromaDB")]
+    RET --> COR["Corpus: 5 fichas normativas"]
+    SEG -.-> GEM["Google Gemini"]
+    AUD -.-> GEM
+    RED --> REP(["Reporte"])
+    REP --> APP
+```
+
+### Orquestación (el grafo)
+
+El contrato se procesa cláusula por cláusula. El grafo tiene un **loop de
+verificación** (reaudita si el hallazgo no se verifica, hasta 2 veces) y una
+**iteración** que recorre todas las cláusulas:
+
+```mermaid
+flowchart TD
+    INI(["Contrato"]) --> SEG["Segmentar"]
+    SEG -->|con clausulas| REC["Recuperar normas (RAG)"]
+    SEG -.->|sin clausulas| RED["Redactar"]
+    REC --> AUD["Auditar"]
+    AUD --> VER["Verificar"]
+    VER -->|no verificado, reintenta| AUD
+    VER -->|verificado| AVZ{"Quedan clausulas"}
+    AVZ -->|si| REC
+    AVZ -->|no| RED
+    RED --> FIN(["Reporte de auditoria"])
+```
+
+### Los 5 agentes
 
 | Agente | Rol |
 |--------|-----|
 | Segmentador | Parte el contrato en cláusulas y detecta cláusulas obligatorias ausentes |
-| Retriever | Recupera del corpus las normas aplicables a cada cláusula (RAG) |
+| Retriever | Recupera del corpus las normas aplicables a cada cláusula (RAG híbrido) |
 | Auditor | Dictamina cada cláusula: cumple / viola / ambigua / faltante |
 | Verificador | Comprueba que cada dictamen cite una norma real (anti-alucinación) |
 | Redactor | Consolida el reporte con hallazgos, recomendaciones y score |
