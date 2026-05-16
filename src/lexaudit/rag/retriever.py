@@ -14,6 +14,7 @@ from rank_bm25 import BM25Okapi
 from langchain_core.documents import Document
 
 from lexaudit.config import settings
+from lexaudit.models.schemas import NormaRecuperada
 from lexaudit.rag.ingest import cargar_fichas
 from lexaudit.rag.vectorstore import get_vectorstore
 
@@ -61,3 +62,18 @@ def recuperar(consulta: str, top_k: int | None = None) -> list[Document]:
         reverse=True,
     )
     return ordenadas[:top_k]
+
+
+def recuperar_normas(consulta: str, top_k: int | None = None) -> list[NormaRecuperada]:
+    """Igual que `recuperar`, pero devuelve modelos del dominio (NormaRecuperada).
+
+    Es la forma que consumen los agentes Auditor y Verificador.
+    """
+    return [
+        NormaRecuperada(
+            tema=doc.metadata["tema"],
+            fuente=doc.metadata["fuente"],
+            texto=doc.page_content,
+        )
+        for doc in recuperar(consulta, top_k)
+    ]
