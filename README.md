@@ -108,9 +108,21 @@ uv run python -m lexaudit.rag.ingest
 uv run streamlit run app.py
 ```
 
-## Estado
+## Tests
 
-🚧 En construcción — ver el plan en `docs/`.
+```bash
+uv run pytest
+```
+
+La suite cubre la lógica **determinista** (verificación de citas, cálculo del
+score, decisiones del grafo). Los componentes que dependen del LLM —que no son
+deterministas— se validan con corridas de integración end-to-end.
+
+## Documentación
+
+- [`docs/decisions.md`](docs/decisions.md) — decisiones de diseño y trade-offs
+- [`docs/ai-usage.md`](docs/ai-usage.md) — uso de IA en la construcción
+- [`docs/spec-lexaudit.md`](docs/spec-lexaudit.md) — especificación funcional
 
 ## Licencia
 
