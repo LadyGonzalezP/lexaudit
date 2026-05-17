@@ -9,10 +9,16 @@ jornada) se centralizan aquí para poder actualizarlos sin tocar el código.
 from pathlib import Path
 from typing import Literal
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Raíz del proyecto: lexaudit/ (este archivo está en src/lexaudit/config.py)
 ROOT_DIR = Path(__file__).resolve().parents[2]
+
+# Carga el .env en las variables de entorno del proceso. Además de alimentar
+# esta configuración, deja disponibles las variables LANGSMITH_* para que
+# LangChain/LangGraph las detecten y activen la observabilidad.
+load_dotenv(ROOT_DIR / ".env")
 
 
 class Settings(BaseSettings):

@@ -118,6 +118,15 @@ La suite cubre la lógica **determinista** (verificación de citas, cálculo del
 score, decisiones del grafo). Los componentes que dependen del LLM —que no son
 deterministas— se validan con corridas de integración end-to-end.
 
+## Observabilidad
+
+El sistema está instrumentado con [LangSmith](https://smith.langchain.com):
+cada ejecución deja una traza completa — llamadas al LLM, latencia, tokens y
+el recorrido del grafo.
+
+Es **opt-in**: se activa con `LANGSMITH_TRACING=true` en el `.env`. Si está
+desactivada, el sistema funciona igual.
+
 ## Documentación
 
 - [`docs/decisions.md`](docs/decisions.md) — decisiones de diseño y trade-offs
