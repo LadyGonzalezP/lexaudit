@@ -8,6 +8,7 @@ Uso:  uv run python -m lexaudit.rag.ingest
 """
 
 import shutil
+from functools import cache
 
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
@@ -24,8 +25,13 @@ def _extraer_tema(texto: str) -> str:
     return "DESCONOCIDO"
 
 
+@cache
 def cargar_fichas() -> list[Document]:
-    """Carga las fichas Markdown del corpus como documentos de LangChain."""
+    """Carga las fichas Markdown del corpus como documentos de LangChain.
+
+    Cacheada: el corpus no cambia durante la ejecución, así que se lee del
+    disco una sola vez aunque el RAG la consulte muchas veces.
+    """
     docs: list[Document] = []
     for ruta in sorted(settings.corpus_dir.glob("*.md")):
         texto = ruta.read_text(encoding="utf-8")

@@ -131,10 +131,13 @@ def construir_grafo():
     return g.compile()
 
 
+# El grafo se compila una sola vez, al importar el módulo (no en cada petición).
+_GRAFO = construir_grafo()
+
+
 def auditar_contrato(texto_contrato: str) -> Reporte:
     """Punto de entrada: audita un contrato completo y devuelve el reporte."""
-    grafo = construir_grafo()
-    estado_final = grafo.invoke(
+    estado_final = _GRAFO.invoke(
         {"contrato": texto_contrato},
         config={"recursion_limit": 100},
     )
