@@ -228,8 +228,17 @@ def main() -> None:
         if not contenido.strip():
             st.error("No hay contrato para auditar.")
             return
-        with st.spinner("Auditando el contrato... (unos segundos)"):
-            reporte = auditar_contrato(contenido)
+        try:
+            with st.spinner("Auditando el contrato... (unos segundos)"):
+                reporte = auditar_contrato(contenido)
+        except Exception as error:  # noqa: BLE001 - en la UI capturamos todo
+            st.error(
+                "No se pudo completar la auditoría. El servicio de IA puede "
+                "estar temporalmente saturado o no disponible. Espera unos "
+                "segundos y vuelve a intentar."
+            )
+            st.caption(f"Detalle técnico: {type(error).__name__}")
+            return
         _mostrar_reporte(reporte)
 
 

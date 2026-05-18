@@ -18,6 +18,9 @@ def get_llm(temperature: float = 0.0) -> BaseChatModel:
 
     Temperatura 0 por defecto: el sistema necesita respuestas estables y
     reproducibles para que la demo en vivo se comporte igual cada vez.
+
+    `max_retries` hace que LangChain reintente automáticamente —con espera
+    incremental— ante errores transitorios del proveedor (rate-limit, 5xx).
     """
     if settings.llm_provider == "groq":
         from langchain_groq import ChatGroq
@@ -26,6 +29,7 @@ def get_llm(temperature: float = 0.0) -> BaseChatModel:
             model=settings.groq_model,
             api_key=settings.groq_api_key,
             temperature=temperature,
+            max_retries=settings.llm_max_retries,
         )
 
     from langchain_google_genai import ChatGoogleGenerativeAI
@@ -34,4 +38,5 @@ def get_llm(temperature: float = 0.0) -> BaseChatModel:
         model=settings.gemini_model,
         google_api_key=settings.gemini_api_key,
         temperature=temperature,
+        max_retries=settings.llm_max_retries,
     )

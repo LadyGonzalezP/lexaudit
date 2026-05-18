@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-2.5-flash"
     embedding_model: str = "models/gemini-embedding-001"
 
+    # Reintentos automáticos del LLM ante errores transitorios (rate-limit, 5xx).
+    llm_max_retries: int = 3
+
     # --- Rutas ---
     corpus_dir: Path = ROOT_DIR / "corpus"
     chroma_dir: Path = ROOT_DIR / "data" / "chroma"
