@@ -65,15 +65,19 @@ flowchart TD
     RED --> FIN(["Reporte de auditoria"])
 ```
 
-### Los 5 agentes
+### Los 5 componentes
 
-| Agente | Rol |
-|--------|-----|
-| Segmentador | Parte el contrato en cláusulas y detecta cláusulas obligatorias ausentes |
-| Retriever | Recupera del corpus las normas aplicables a cada cláusula (RAG híbrido) |
-| Auditor | Dictamina cada cláusula: cumple / viola / ambigua / faltante |
-| Verificador | Comprueba que cada dictamen cite una norma real (anti-alucinación) |
-| Redactor | Consolida el reporte con hallazgos, recomendaciones y score |
+Dos son **agentes con LLM**; tres son **deterministas o de recuperación**
+(sin LLM). Es una decisión de diseño: cada paso que puede ser exacto, lo es —
+el no-determinismo del LLM se usa solo donde aporta criterio.
+
+| Componente | Tipo | Rol |
+|------------|------|-----|
+| Segmentador | Agente LLM | Parte el contrato en cláusulas y detecta cláusulas obligatorias ausentes |
+| Retriever | RAG | Recupera del corpus las normas aplicables a cada cláusula (búsqueda híbrida) |
+| Auditor | Agente LLM | Dictamina cada cláusula: cumple / viola / ambigua / faltante |
+| Verificador | Determinista | Comprueba que cada dictamen cite una norma real (anti-alucinación) |
+| Redactor | Determinista | Consolida el reporte con hallazgos, recomendaciones y score |
 
 El detalle de diseño está en [`docs/`](docs/).
 

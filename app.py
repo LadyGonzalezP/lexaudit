@@ -24,13 +24,14 @@ _ESTILO: dict[Dictamen, tuple[str, str, str]] = {
     Dictamen.FUERA_DE_ALCANCE: ("#9aa0a6", "➖", "Fuera de alcance"),
 }
 
-# Los 5 agentes (nombre, descripción) para el panel lateral.
-_AGENTES = [
-    ("Segmentador", "divide el contrato en cláusulas"),
-    ("Retriever (RAG)", "busca la norma aplicable"),
-    ("Auditor", "dictamina cada cláusula"),
-    ("Verificador", "valida las citas"),
-    ("Redactor", "consolida el reporte"),
+# Los 5 componentes del pipeline (nombre, descripción, tipo).
+# Solo 2 son agentes con LLM; los otros 3 son deterministas o RAG.
+_COMPONENTES = [
+    ("Segmentador", "divide el contrato en cláusulas", "LLM"),
+    ("Retriever", "busca la norma aplicable (RAG)", "RAG"),
+    ("Auditor", "dictamina cada cláusula", "LLM"),
+    ("Verificador", "valida las citas", "Determinista"),
+    ("Redactor", "consolida el reporte", "Determinista"),
 ]
 
 # Los 5 temas auditables, para los chips del panel lateral.
@@ -80,6 +81,12 @@ _CSS = """
   .lex-agente-txt {font-size: .9rem; line-height: 1.35;}
   .lex-agente-txt b {color: #1e3a5f;}
   .lex-agente-txt span {color: #5a6577; font-size: .83rem;}
+  .lex-tag {
+      display: inline-block; font-size: .6rem; font-weight: 700;
+      padding: 1px 6px; border-radius: 7px; margin-left: 6px;
+      background: #e3ebf3; color: #5a6577; letter-spacing: .3px;
+      text-transform: uppercase;
+  }
   .lex-chip {
       display: inline-block; background: #e3ebf3; color: #1e3a5f;
       padding: 4px 11px; border-radius: 13px; font-size: .77rem;
@@ -110,23 +117,24 @@ def _color_score(score: int) -> str:
 
 
 def _panel_lateral() -> None:
-    """Dibuja el panel lateral: flujo de agentes y alcance."""
+    """Dibuja el panel lateral: los componentes del pipeline y el alcance."""
     with st.sidebar:
         st.markdown(
             '<div class="lex-side-title">⚙️ Cómo funciona</div>',
             unsafe_allow_html=True,
         )
         st.caption(
-            "Un sistema multiagente orquestado con LangGraph que audita el "
-            "contrato cláusula por cláusula:"
+            "5 componentes orquestados con LangGraph —2 agentes con LLM y 3 "
+            "deterministas— que auditan el contrato cláusula por cláusula:"
         )
-        agentes = "".join(
+        componentes = "".join(
             f'<div class="lex-agente"><div class="lex-num">{i}</div>'
-            f'<div class="lex-agente-txt"><b>{nombre}</b><br>'
+            f'<div class="lex-agente-txt"><b>{nombre}</b>'
+            f'<span class="lex-tag">{tipo}</span><br>'
             f"<span>{desc}</span></div></div>"
-            for i, (nombre, desc) in enumerate(_AGENTES, start=1)
+            for i, (nombre, desc, tipo) in enumerate(_COMPONENTES, start=1)
         )
-        st.markdown(agentes, unsafe_allow_html=True)
+        st.markdown(componentes, unsafe_allow_html=True)
 
         st.markdown(
             '<div class="lex-side-title" style="margin-top:18px">📋 Alcance</div>',
