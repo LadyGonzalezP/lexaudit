@@ -12,9 +12,10 @@ detecta esos riesgos y los reporta con su fundamento normativo y un score.
 ## Por qué este diseño
 
 **Sistema multiagente, no un prompt único.** Auditar un contrato son tareas
-distintas —segmentar, recuperar la norma, dictaminar, verificar, redactar—.
-Cada agente tiene una responsabilidad única; eso hace el sistema testeable,
-explicable y extensible.
+distintas —segmentar, recuperar la norma, dictaminar, verificar, redactar—. El
+sistema tiene 5 componentes: 2 agentes con LLM (donde hace falta criterio) y 3
+deterministas. Cada uno tiene una responsabilidad única; eso hace el sistema
+testeable, explicable y extensible.
 
 **Orquestación con LangGraph.** El reto pide orquestación explícita. LangGraph
 modela el flujo como un grafo de estados con loops y decisiones: el flujo *es*
@@ -24,9 +25,9 @@ el código, y el diagrama de arquitectura se deriva directo de él.
 prompts: vive en 5 fichas Markdown que el RAG recupera con búsqueda híbrida
 (vectorial + BM25). Agregar un tema es agregar una ficha, sin tocar agentes.
 
-**Verificador determinista.** El agente Verificador comprueba —en código, no
-con un LLM— que cada cita exista en lo recuperado. No se pone una IA a vigilar
-a otra IA: la verificación de pertenencia es una operación exacta.
+**Verificador determinista.** El Verificador comprueba —en código, no con un
+LLM— que cada cita exista en lo recuperado. No se pone una IA a vigilar a otra
+IA: la verificación de pertenencia es una operación exacta.
 
 **Provider-agnóstico.** El acceso al LLM está aislado en una sola capa.
 Durante el desarrollo se cambió de Gemini a Groq por un límite de cuota: tocó
