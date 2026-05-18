@@ -95,11 +95,11 @@ cd lexaudit
 uv sync
 ```
 
-Configurá la clave de API:
+Configura la clave de API:
 
 ```bash
 cp .env.example .env
-# editá .env y poné tu GEMINI_API_KEY (gratis en https://aistudio.google.com/apikey)
+# edita .env y pon tu GEMINI_API_KEY (gratis en https://aistudio.google.com/apikey)
 ```
 
 ## Uso
