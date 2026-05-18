@@ -9,9 +9,8 @@
   rama (que están en escalas distintas), solo usa las posiciones.
 """
 
-from rank_bm25 import BM25Okapi
-
 from langchain_core.documents import Document
+from rank_bm25 import BM25Okapi
 
 from lexaudit.config import settings
 from lexaudit.models.schemas import NormaRecuperada
