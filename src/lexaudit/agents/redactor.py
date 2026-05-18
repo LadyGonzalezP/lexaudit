@@ -38,17 +38,25 @@ def _calcular_score(hallazgos: list[Hallazgo]) -> int:
 
 
 def _generar_resumen(hallazgos: list[Hallazgo]) -> str:
-    """Resumen textual del reporte (plantilla determinista)."""
+    """Resumen textual del reporte (plantilla determinista).
+
+    El desglose cuenta todos los dictámenes posibles, de modo que la suma
+    coincida con el total de cláusulas auditadas.
+    """
     violaciones = sum(1 for h in hallazgos if h.dictamen == Dictamen.VIOLA)
-    faltantes = sum(1 for h in hallazgos if h.dictamen == Dictamen.FALTANTE)
     ambiguas = sum(1 for h in hallazgos if h.dictamen == Dictamen.AMBIGUA)
+    faltantes = sum(1 for h in hallazgos if h.dictamen == Dictamen.FALTANTE)
+    conformes = sum(1 for h in hallazgos if h.dictamen == Dictamen.CUMPLE)
+    fuera = sum(1 for h in hallazgos if h.dictamen == Dictamen.FUERA_DE_ALCANCE)
     revision = sum(1 for h in hallazgos if h.requiere_revision_humana)
 
     partes = [
-        f"Se auditaron {len(hallazgos)} cláusulas.",
-        f"Violaciones detectadas: {violaciones}.",
-        f"Cláusulas obligatorias ausentes: {faltantes}.",
-        f"Cláusulas ambiguas: {ambiguas}.",
+        f"Se auditaron {len(hallazgos)} cláusulas:",
+        f"{violaciones} violaciones,",
+        f"{ambiguas} ambiguas,",
+        f"{faltantes} obligatorias ausentes,",
+        f"{conformes} conformes,",
+        f"{fuera} fuera de alcance.",
     ]
     if revision:
         partes.append(f"{revision} hallazgo(s) requieren revisión humana.")
