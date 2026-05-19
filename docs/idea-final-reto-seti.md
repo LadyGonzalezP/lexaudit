@@ -12,7 +12,9 @@
 - **Qué:** LexAudit — sistema multiagente que audita contratos laborales
   colombianos y produce un reporte de riesgos con citas y score.
 - **Framework:** LangGraph (orquestación por grafo de estados explícito).
-- **LLM:** Google Gemini (free tier). Sin OpenAI/Azure — decisión cerrada.
+- **LLM:** proveedor configurable mediante capa `llm/provider.py`.
+- **Proveedor usado en demo:** Groq.
+- **Decisión:** arquitectura provider-agnostic para poder cambiar entre Gemini, Groq u otro proveedor sin modificar agentes ni grafo.
 - **Agentes (5):** Segmentador, Retriever, Auditor, Verificador, Redactor.
 - **Orquestación:** grafo con fan-out por cláusula + loop de verificación.
 - **RAG:** corpus curado de 5 fichas Markdown + recuperación híbrida + ChromaDB.
@@ -43,7 +45,9 @@ Un **sistema multiagente** que recibe un contrato laboral y produce un
 uno con **cita a la norma exacta**, **recomendación de corrección** y un
 **score de cumplimiento (0-100)**.
 
-NO es un chatbot. NO responde preguntas. **Produce un entregable.**
+No está diseñado como chatbot conversacional general. Su objetivo principal es producir un entregable estructurado: un reporte de auditoría preliminar.
+
+No estoy intentando auditar todo el derecho laboral colombiano. Estoy demostrando una arquitectura escalable con cinco temas verificables
 
 - **Input:** un contrato laboral (PDF o texto).
 - **Output:** un reporte de auditoría estructurado, con citas, recomendaciones
@@ -126,7 +130,7 @@ embeddings sentence-transformers locales (sin quota, demo offline).
 |------|-------------|
 | Lenguaje | Python 3.12 |
 | Orquestación | LangGraph + LangChain |
-| LLM | Google Gemini (`langchain-google-genai`) — free tier |
+| LLM | Google Gemini (`langchain-google-genai`) — free tier | Groq 
 | Embeddings | sentence-transformers (local) |
 | Vector store | ChromaDB (local) |
 | Lectura de PDF | pypdf |
@@ -135,7 +139,7 @@ embeddings sentence-transformers locales (sin quota, demo offline).
 | Calidad de código | ruff + pytest |
 | Gestión de deps | uv (con `requirements.txt` para el evaluador) |
 
-**Regla dura: NO se usa OpenAI ni Azure OpenAI** — tienen costo. 100% Gemini.
+**Regla dura: NO se usa OpenAI ni Azure OpenAI** — tienen costo. Gemini o Groq
 
 ---
 
@@ -190,24 +194,6 @@ lexaudit/
 | Arquitectura | 5 roles diferenciados + map + loop + manejo de errores |
 | Calidad de código | Estructura modular, ruff, pytest, separación de responsabilidades |
 | Uso de IA en el proceso | `docs/ai-usage.md` — diario real, no solo discurso |
-| Sustentación | Trade-offs documentados + ensayo |
-
----
-
-## 10. Calendario (fechas reales)
-
-| Día | Disponible | Fases |
-|-----|-----------|-------|
-| **Sáb 16 may** (desde 11am) | sí | Spec ✓ · Setup repo · Corpus (5 fichas) · RAG |
-| **Dom 17 may** | ❌ no | (descanso forzado) |
-| **Lun 18 may** | sí, completo | Los 5 agentes · Grafo LangGraph · Integración |
-| **Mar 19 may** (hasta ~2pm) | sí, mañana | Demo Streamlit · README · decisiones · diagrama · push final |
-
-**Deadline de entrega: martes 19 de mayo, 6:00 pm.** El repo debe estar
-disponible y accesible a esa hora.
-
-> Pendiente confirmar con SETI: si "martes 6pm" es la entrega del repo o la
-> sustentación misma. El reto exige el repo disponible 24h antes de sustentar.
 
 ---
 
@@ -217,4 +203,3 @@ disponible y accesible a esa hora.
 - [x] Jurisdicción: Colombia (Código Sustantivo del Trabajo).
 - [x] Solo contratos laborales individuales.
 - [x] Idioma: español.
-- [x] Deadline de entrega: martes 19 may, 6:00 pm.

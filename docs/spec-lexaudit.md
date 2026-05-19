@@ -138,7 +138,7 @@ Score final = máx(0, 100 − descuentos). Se documenta como heurística simple.
 | CA-4 | Dada una cláusula sobre un tema fuera de los 5, el dictamen es FUERA_DE_ALCANCE |
 | CA-5 | El reporte final incluye score (0-100) y disclaimer |
 | CA-6 | La app Streamlit recibe un contrato y muestra el reporte sin intervención manual |
-| CA-7 | El sistema corre de punta a punta sin claves de pago (solo Gemini free) |
+| CA-7 | Costo $0 — no usa OpenAI/Azure ni proveedores pagos obligatorios | Gemini Free o groq
 
 ---
 
